@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Article List</title>
+  </head>
+  <body>
+    <h1>Articles</h1>
+    <ul>
+      <li th:each="article : ${articles}">
+        <a
+          th:href="@{/{slug}(slug=${article.slug})}"
+          th:text="${article.title}"
+        ></a>
+      </li>
+    </ul>
+
+    <a href="/create">Create a new one</a>
+  </body>
+</html>

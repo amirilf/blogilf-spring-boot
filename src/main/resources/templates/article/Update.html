@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Edit Article</title>
+  </head>
+  <body>
+    <h1>Edit Article</h1>
+
+    <div th:if="${error}" style="color: red" th:text="${error}"></div>
+
+    <form
+      th:action="@{/api/{slug}(slug=${article.slug})}"
+      th:object="${article}"
+      method="post"
+    >
+      <input type="hidden" name="_method" value="put" />
+
+      <label for="title">Title:</label>
+      <input
+        type="text"
+        id="title"
+        th:field="*{title}"
+        required="required"
+        maxlength="50"
+      /><br />
+
+      <label for="slug">Slug:</label>
+      <input
+        type="text"
+        id="slug"
+        th:field="*{slug}"
+        required="required"
+        maxlength="50"
+      /><br />
+
+      <label for="content">Content:</label>
+      <textarea
+        id="content"
+        th:field="*{content}"
+        required="required"
+      ></textarea
+      ><br />
+
+      <input type="submit" value="Update Article" />
+    </form>
+    <a href="#" th:href="@{/articles}">Back to Article List</a>
+  </body>
+</html>

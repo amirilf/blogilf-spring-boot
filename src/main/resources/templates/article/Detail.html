@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:text="${article.title}">Article Detail</title>
+  </head>
+  <body>
+    <h1 th:text="${article.title}"></h1>
+    <p th:text="${article.content}"></p>
+    <p>
+      <strong>Published Date:</strong>
+      <span th:text="${article.publishedDate}"></span>
+    </p>
+    <a href="/">Back to list</a>
+    <a th:href="@{/{slug}/update(slug=${article.slug})}">Update</a>
+  </body>
+</html>
