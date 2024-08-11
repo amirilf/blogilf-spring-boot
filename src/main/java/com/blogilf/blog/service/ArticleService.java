@@ -37,10 +37,6 @@ public class ArticleService {
         model.addAttribute("article", new Article());
     }
 
-    public void getArticles(Model model){
-        model.addAttribute("articles", repo.findAll());
-    }
-
     public ResponseEntity<Void> getArticle(Model model,String slug){
         Optional<Article> article = repo.findBySlug(slug);
         if (article.isPresent()) {
@@ -48,6 +44,10 @@ public class ArticleService {
             return new ResponseEntity<>(HttpStatus.FOUND);            
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public void getArticles(Model model){
+        model.addAttribute("articles", repo.findAll());
     }
 
     public ResponseEntity<String> updateArticle(String slug,Article article,Model model){
@@ -82,13 +82,16 @@ public class ArticleService {
     }
 
 
-    // init data
+    // init data right after DI
     @PostConstruct
     public void init(){
-        repo.save(new Article(null,"First article","111","11111111111111111",null));
-        repo.save(new Article(null,"Second article!","222","22222222222222222222",null));
-        repo.save(new Article(null,"Third article!","333","333333333333333333",null));
-        repo.save(new Article(null,"Forth article!","444","4444444444444444444444444",null));
+
+        System.out.println("");
+
+        repo.save(new Article(null,"First article","111","content 1",null));
+        repo.save(new Article(null,"Second article!","222","content 2",null));
+        repo.save(new Article(null,"Third article!","333","content 3",null));
+        repo.save(new Article(null,"Forth article!","444","content 4",null));
     
         System.out.println("\nADDING ITEMS\n");
     }
