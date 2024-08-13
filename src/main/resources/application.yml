@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: Blogilf
+
+  datasource:
+    url: jdbc:h2:mem:blogDB
+    driverClassName: org.h2.Driver
+    username: amir
+    password: 1234
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+
+  h2:
+    console:
+      enabled: true
+
+  security:
+    user:
+      name: amir
+      password: 123
+#
+# Uncomment the following lines if you want to enable logging
+# logging:
+#   level:
+#     web: DEBUG
+#     org:
+#       thymeleaf: DEBUG
