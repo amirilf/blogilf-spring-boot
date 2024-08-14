@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-
     private final UserService userService;
 
     UserController(UserService userService){
@@ -34,12 +33,14 @@ public class UserController {
         return userService.getUser(username);
     }
 
-
     @PostMapping("/register")
     public User register(@RequestBody User user){
         return userService.register(user); 
     }
 
-
-
+    @PostMapping("/login")
+    public String login(@RequestBody User user){
+        return userService.verify(user);
+    }
+    
 }

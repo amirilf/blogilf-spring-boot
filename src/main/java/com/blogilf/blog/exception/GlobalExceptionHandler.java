@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         String path = request.getDescription(false).replace("uri=", "");
         return responseEntityBuilder(HttpStatus.BAD_REQUEST, ex.getMessage(), path);
     }
-
+    
     // 404
     @ExceptionHandler(CustomResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleCustomResourceNotFoundException(CustomResourceNotFoundException ex, WebRequest request) {        
