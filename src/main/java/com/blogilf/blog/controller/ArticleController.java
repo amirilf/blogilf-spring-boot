@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 @Controller
-@RequestMapping("")
+@RequestMapping("/articles")
 public class ArticleController {
 
     private final ArticleService service;
@@ -25,42 +25,6 @@ public class ArticleController {
     public ArticleController(ArticleService service) {
         this.service = service;
     }
-
-
-    // ========== API
-
-    @PostMapping("api/create")
-    public String createArticle(@ModelAttribute Article article,Model model) {
-
-        ResponseEntity<String> responseEntity = service.createArticle(article,model);
-
-        switch (responseEntity.getStatusCode()) {
-            case HttpStatus.CONFLICT:
-                return "article/Create";          
-            default:
-                return "redirect:/" + article.getSlug();
-        }
-    }
-
-    @PutMapping("api/{slug}")
-    public String updateArticle(@PathVariable String slug,Model model, @ModelAttribute Article article) throws Exception {
-
-        ResponseEntity<String> responseEntity = service.updateArticle(slug, article,model);
-        
-        switch (responseEntity.getStatusCode()) {
-            case HttpStatus.NOT_FOUND:
-                return "error/404";
-            case HttpStatus.CONFLICT:
-                return "article/Update";
-            case HttpStatus.CREATED:
-                return "redirect:/" + article.getSlug();
-            default:
-                throw new Exception("Smth went wrong");
-        }
-    }
-
-
-    // ========== UI
 
     @GetMapping("")
     public String listArticles(Model model) {
@@ -83,6 +47,23 @@ public class ArticleController {
         }
     }
 
+    @PutMapping("/{slug}")
+    public String updateArticle(@PathVariable String slug,Model model, @ModelAttribute Article article) throws Exception {
+
+        ResponseEntity<String> responseEntity = service.updateArticle(slug, article,model);
+        
+        switch (responseEntity.getStatusCode()) {
+            case HttpStatus.NOT_FOUND:
+                return "error/404";
+            case HttpStatus.CONFLICT:
+                return "article/Update";
+            case HttpStatus.CREATED:
+                return "redirect:/" + article.getSlug();
+            default:
+                throw new Exception("Smth went wrong");
+        }
+    }
+
     @GetMapping("/{slug}/update")
     public String updateArticleForm(@PathVariable String slug, Model model) {
         
@@ -102,4 +83,16 @@ public class ArticleController {
         return "article/Create";
     }
 
+    @PostMapping("/create")
+    public String createArticle(@ModelAttribute Article article,Model model) {
+
+        ResponseEntity<String> responseEntity = service.createArticle(article,model);
+
+        switch (responseEntity.getStatusCode()) {
+            case HttpStatus.CONFLICT:
+                return "article/Create";          
+            default:
+                return "redirect:/" + article.getSlug();
+        }
+    }
 }
