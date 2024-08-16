@@ -7,12 +7,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.blogilf.blog.interceptor.RequestInterceptor;
 
 @Configuration
-public class Config implements WebMvcConfigurer{
+public class InceptorConfig implements WebMvcConfigurer{
     
 
     private final RequestInterceptor requestInterceptor;
 
-    Config(RequestInterceptor requestInterceptor){
+    InceptorConfig(RequestInterceptor requestInterceptor){
         this.requestInterceptor = requestInterceptor;
     }
 

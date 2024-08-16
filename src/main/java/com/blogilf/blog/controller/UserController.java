@@ -7,7 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blogilf.blog.model.User;
 import com.blogilf.blog.service.UserService;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -39,8 +42,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user){
-        return userService.verify(user);
+    public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response) {
+        return userService.verify(user,response);
     }
     
 }

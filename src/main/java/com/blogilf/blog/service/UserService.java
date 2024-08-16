@@ -1,5 +1,7 @@
 package com.blogilf.blog.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +13,7 @@ import com.blogilf.blog.model.User;
 import com.blogilf.blog.repository.UserRepository;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,12 +33,6 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    public User register(User user){
-        user.setPassword(encoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return user;
-    }
-
     public List<User> getUsers(){
         return userRepository.findAll();
     }
@@ -49,20 +46,26 @@ public class UserService {
         throw new CustomResourceNotFoundException(username + " not found!");
     }
 
-    public String verify(User user){
+    public User register(User user){
+        user.setPassword(encoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return user;
+    }
+    
+    public ResponseEntity<String> verify(User user,HttpServletResponse response){
 
-        // logging and returning JWT token
+        // validate username,password and return JWT token
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-    
+        
         if (authentication.isAuthenticated()) {
             String token = jwtService.generateToken(user.getUsername());
             System.out.println(token);
-            return token;
+            return ResponseEntity.ok(token);
         }
-
-        // TODO: handle the default 401 exeption handler?
-        return "FAILED";
+        
+        // gonna be handled by AuthenticationException in authenticate method!
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed.");
     }
 
     @PostConstruct
