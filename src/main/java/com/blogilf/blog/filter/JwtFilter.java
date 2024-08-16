@@ -1,7 +1,9 @@
 package com.blogilf.blog.filter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -23,19 +25,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class JwtFilter extends OncePerRequestFilter{
+public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
 
-    JwtFilter(JwtService jwtService){
+    JwtFilter(JwtService jwtService) {
         this.jwtService = jwtService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
         try {
-            
+
             String header = request.getHeader("Authorization");
             String token = null;
             String username = null;
@@ -47,10 +50,10 @@ public class JwtFilter extends OncePerRequestFilter{
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 // TODO: fetch from CustomUserDetailService.loadUserByUsername ?
-                UserPrincipal userPrincipal = new UserPrincipal(new User(null, null,username, null, null));
+                UserPrincipal userPrincipal = new UserPrincipal(new User(null, null, username, null, null));
 
                 if (jwtService.validateToken(token)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userPrincipal,null,userPrincipal.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -58,25 +61,30 @@ public class JwtFilter extends OncePerRequestFilter{
 
             filterChain.doFilter(request, response);
 
-        // handle possible exceptions from jwt
         } catch (SignatureException ex) {
-            handleException(response, "Invalid JWT signature", HttpServletResponse.SC_UNAUTHORIZED);
+            handleException(request, response, "Invalid JWT signature", HttpServletResponse.SC_UNAUTHORIZED);
         } catch (MalformedJwtException ex) {
-            handleException(response, "Malformed JWT token", HttpServletResponse.SC_BAD_REQUEST);
+            handleException(request, response, "Malformed JWT token", HttpServletResponse.SC_BAD_REQUEST);
         } catch (ExpiredJwtException ex) {
-            handleException(response, "Expired JWT token", HttpServletResponse.SC_UNAUTHORIZED);
+            handleException(request, response, "Expired JWT token", HttpServletResponse.SC_UNAUTHORIZED);
         } catch (UnsupportedJwtException ex) {
-            handleException(response, "Unsupported JWT token", HttpServletResponse.SC_BAD_REQUEST);
+            handleException(request, response, "Unsupported JWT token", HttpServletResponse.SC_BAD_REQUEST);
         } catch (IllegalArgumentException ex) {
-            handleException(response, "JWT token is missing or invalid", HttpServletResponse.SC_BAD_REQUEST);
+            handleException(request, response, "JWT token is missing or invalid", HttpServletResponse.SC_BAD_REQUEST);
         } catch (JwtException ex) {
-            handleException(response, "Invalid JWT token", HttpServletResponse.SC_UNAUTHORIZED);
+            handleException(request, response, "Invalid JWT token", HttpServletResponse.SC_UNAUTHORIZED);
         }
-    }   
+    }
 
-    private void handleException(HttpServletResponse response, String message, int status) throws IOException {
+    private void handleException(HttpServletRequest request, HttpServletResponse response, String message, int status) throws IOException {
+        
+        String jsonResponse = String.format(
+            "{\"path\": \"%s\", \"error\": \"%s\", \"message\": \"%s\", \"timestamp\": \"%s\", \"status\": %d}",
+            request.getRequestURI(), HttpStatus.valueOf(status).getReasonPhrase(), message, LocalDateTime.now(), status
+        );
+
         response.setStatus(status);
         response.setContentType("application/json");
-        response.getWriter().write("{\"error\": \"" + message + "\"}");
+        response.getWriter().write(jsonResponse);
     }
 }
