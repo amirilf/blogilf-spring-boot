@@ -8,11 +8,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.blogilf.blog.config.SecurityConfig;
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.model.User;
 import com.blogilf.blog.repository.UserRepository;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(SecurityConfig.encoderStrength);
 
     UserService(UserRepository userRepository,AuthenticationManager authenticationManager,JwtService jwtService){
         this.userRepository = userRepository;
@@ -43,7 +43,7 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         }
-        throw new CustomResourceNotFoundException(username + " not found!");
+        throw new CustomResourceNotFoundException("User with username: " + username + " is not found!");
     }
 
     public User register(User user){
@@ -64,17 +64,7 @@ public class UserService {
             return ResponseEntity.ok(token);
         }
         
-        // gonna be handled by AuthenticationException in authenticate method!
+        // gonna be handled by AuthenticationException in authenticate method and not here ):
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed.");
-    }
-
-    @PostConstruct
-    public void init(){
-
-        User user1 = User.builder().username("amir").name("Amir").password(encoder.encode("123")).build();
-        User user2 = User.builder().username("ali").name("Ali").password(encoder.encode("111")).build();
-
-        userRepository.save(user1);
-        userRepository.save(user2);
     }
 }

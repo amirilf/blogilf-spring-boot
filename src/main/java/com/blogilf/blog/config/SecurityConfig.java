@@ -21,6 +21,8 @@ import com.blogilf.blog.service.CustomUserDetailService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    public final static int encoderStrength = 5;
+
     private final CustomUserDetailService customUserDetailService;
     private final JwtFilter jwtFilter;
 
@@ -58,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(new BCryptPasswordEncoder(5));
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(encoderStrength));
         provider.setUserDetailsService(customUserDetailService);
         return provider;
     }

@@ -37,7 +37,7 @@ public class ArticleServiceTest {
     @InjectMocks
     private ArticleService articleService;
 
-    private Article article = new Article(null,"Title","Slug","Content",null);
+    private Article article = new Article(null,"Title","Slug","Content",null,null);
 
     @Test
     void createArticle_ReturnsCreated(){

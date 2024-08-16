@@ -7,12 +7,20 @@ import lombok.Builder;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -27,22 +35,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Name cannot be null.")
+    @NotNull(message = "Name can not be null.")
     @Size(max = 50, message = "Name must not exceed 50 characters.")
     @Column(name = "name")
     private String name;
 
-    @NotNull(message = "Username cannot be null.")
+    @NotNull(message = "Username can not be null.")
     @Size(max = 50, message = "Username must not exceed 50 characters.")
     @Column(name = "username",unique = true)
     private String username;
 
-    @NotNull(message = "Password cannot be null.")
+    @NotNull(message = "Password can not be null.")
     @Column(name = "password")
     private String password;
 
-    @PastOrPresent(message = "The date joined must be in the past or present.")
     @CreationTimestamp
     @Column(name = "date_joined", updatable = false)
     private LocalDateTime dateJoined;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
+    private List<Article> articles;
+
 }

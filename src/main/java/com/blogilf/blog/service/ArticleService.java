@@ -10,8 +10,6 @@ import org.springframework.ui.Model;
 import com.blogilf.blog.model.Article;
 import com.blogilf.blog.repository.ArticleRepository;
 
-import jakarta.annotation.PostConstruct;
-
 @Service
 public class ArticleService {
     
@@ -80,20 +78,4 @@ public class ArticleService {
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
-
-
-    // init data right after DI
-    @PostConstruct
-    public void init(){
-
-        System.out.println("");
-
-        repo.save(new Article(null,"First article","111","content 1",null));
-        repo.save(new Article(null,"Second article!","222","content 2",null));
-        repo.save(new Article(null,"Third article!","333","content 3",null));
-        repo.save(new Article(null,"Forth article!","444","content 4",null));
-    
-        System.out.println("\nADDING ITEMS\n");
-    }
-
 }
