@@ -2,80 +2,98 @@ package com.blogilf.blog.service;
 
 import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
+import com.blogilf.blog.dto.ArticleDTO;
+import com.blogilf.blog.exception.CustomConflictException;
+import com.blogilf.blog.exception.CustomForbiddenException;
+import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.model.Article;
+import com.blogilf.blog.model.User;
 import com.blogilf.blog.repository.ArticleRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
     
-    private final ArticleRepository repo;
+    private final ArticleRepository articleRepository;
 
-    ArticleService(ArticleRepository repo){
-        this.repo = repo;
+    ArticleService(ArticleRepository articleRepository){
+        this.articleRepository = articleRepository;
     }
 
-    public ResponseEntity<String> createArticle(Article article,Model model) {
+    public List<ArticleDTO> getArticles(){
+        return articleRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+    }
 
-        if (repo.existsBySlug(article.getSlug())){
-            model.addAttribute("error", "Slug is already chosen.");
-            model.addAttribute("article", article);
-            return new ResponseEntity<>("Slug is already used.", HttpStatus.CONFLICT);
+    public Article createArticle(Article article) {
+        
+        if (articleRepository.existsBySlug(article.getSlug())){
+            throw new CustomConflictException("Slug is already used.");
         }
         
-        repo.save(article);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return articleRepository.save(article);
     }
 
-    public void createArticle(Model model){
-        model.addAttribute("article", new Article());
-    }
+    public Article getArticle(String slug) {
 
-    public ResponseEntity<Void> getArticle(Model model,String slug){
-        Optional<Article> article = repo.findBySlug(slug);
+        Optional<Article> article = articleRepository.findBySlug(slug);
+        
         if (article.isPresent()) {
-            model.addAttribute("article", article.get());
-            return new ResponseEntity<>(HttpStatus.FOUND);            
+            return article.get();            
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        throw new CustomResourceNotFoundException("No article found.");
     }
 
-    public void getArticles(Model model){
-        model.addAttribute("articles", repo.findAll());
-    }
+    
+    public Article updateArticle(String slug,Article article){
 
-    public ResponseEntity<String> updateArticle(String slug,Article article,Model model){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Article> updatedArticleOptional = articleRepository.findBySlug(slug);
         
-        Optional<Article> updatedArticleOptional = repo.findBySlug(slug);     
+        if (!username.equals(updatedArticleOptional.get().getAuthor().getUsername())) {
+            throw new CustomForbiddenException("User is not the author.");
+        }
         
         if (updatedArticleOptional.isEmpty()){
-            return new ResponseEntity<>("There is no article to update.",HttpStatus.NOT_FOUND);
+            throw new CustomResourceNotFoundException("No article found.");
         }
 
-        if (!slug.equals(article.getSlug()) && repo.existsBySlug(article.getSlug())){
+        if (!slug.equals(article.getSlug()) && articleRepository.existsBySlug(article.getSlug())){
 
+            // TODO: remove this or not
             // set slug to the original one!
-            article.setSlug(slug);
+            // article.setSlug(slug);
 
-            model.addAttribute("error", "Slug is already used.");
-            model.addAttribute("article", article);
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            throw new CustomConflictException("Slug is already used.");
         }
         
-        // ready to update
-
         Article updatedArticle = updatedArticleOptional.get();
 
         updatedArticle.setSlug(article.getSlug());
         updatedArticle.setTitle(article.getTitle());
         updatedArticle.setContent(article.getContent());
 
-        repo.save(updatedArticle);
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return articleRepository.save(updatedArticle);
     }
+
+    private ArticleDTO convertToDto(Article article) {
+        
+        ArticleDTO dto = new ArticleDTO();
+        dto.setTitle(article.getTitle());
+        dto.setSlug(article.getSlug());
+        dto.setContent(article.getContent());
+        dto.setPublishedDate(article.getPublishedDate());
+
+        User user = article.getAuthor();
+        dto.setAuthorName(user.getName());
+        dto.setAuthorUsername(user.getUsername());
+
+        return dto;
+    }
+
 }
