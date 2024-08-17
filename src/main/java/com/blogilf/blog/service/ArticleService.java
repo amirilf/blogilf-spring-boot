@@ -61,7 +61,7 @@ public class ArticleService {
             return article.get();            
         }
 
-        throw new CustomResourceNotFoundException("No article found.");
+        throw new CustomResourceNotFoundException("Article not found.");
     }
 
     public Article updateArticle(String slug,Article article) {
@@ -70,7 +70,7 @@ public class ArticleService {
         
         // check for correct slug
         if (updatedArticleOptional.isEmpty()){
-            throw new CustomResourceNotFoundException("No article found.");
+            throw new CustomResourceNotFoundException("Article not found.");
         }
 
         // check for correct author
@@ -112,6 +112,18 @@ public class ArticleService {
         dto.setAuthorUsername(user.getUsername());
 
         return dto;
+    }
+
+    public void deleteArticle(String slug) {
+        
+        Article article = articleRepository.findBySlug(slug).orElseThrow(() -> new CustomResourceNotFoundException("Article not found."));
+        
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!username.equals(article.getAuthor().getUsername())) {
+            throw new CustomForbiddenException("User is not the author.");
+        }
+
+        articleRepository.delete(article);
     }
 
 }
