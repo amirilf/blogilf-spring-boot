@@ -31,6 +31,13 @@ public class GlobalExceptionHandler {
         return responseEntityBuilder(HttpStatus.BAD_REQUEST, ex.getMessage(), path);
     }
     
+    // 403
+    @ExceptionHandler(CustomForbiddenException.class)
+    public ResponseEntity<Map<String, Object>> handleCustomForbiddenException(CustomForbiddenException ex, WebRequest request) {
+        String path = request.getDescription(false).replace("uri=", "");
+        return responseEntityBuilder(HttpStatus.FORBIDDEN, ex.getMessage(), path);
+    }
+
     // 404
     @ExceptionHandler(CustomResourceNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleCustomResourceNotFoundException(CustomResourceNotFoundException ex, WebRequest request) {        
@@ -38,6 +45,13 @@ public class GlobalExceptionHandler {
         return responseEntityBuilder(HttpStatus.NOT_FOUND, ex.getMessage(), path);
     }
 
+    // 409
+    @ExceptionHandler(CustomConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleCustomConflictException(CustomConflictException ex, WebRequest request) {        
+        String path = request.getDescription(false).replace("uri=", "");
+        return responseEntityBuilder(HttpStatus.CONFLICT, ex.getMessage(), path);
+    }
+    
     // 500
     @ExceptionHandler(CustomInternalServerErrorException.class)
     public ResponseEntity<Map<String, Object>> handleCustomInternalServerErrorException(CustomInternalServerErrorException ex, WebRequest request) {
