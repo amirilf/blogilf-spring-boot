@@ -4,9 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import jakarta.validation.ConstraintViolationException;
 
@@ -78,7 +80,6 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-    
         String path = request.getDescription(false).replace("uri=", "");
         
         return responseEntityBuilder(HttpStatus.BAD_REQUEST,"Validation failed",path, errors);
@@ -94,10 +95,37 @@ public class GlobalExceptionHandler {
             String errorMessage = error.getMessage();
             errors.put(fieldName, errorMessage);
         });
-    
         String path = request.getDescription(false).replace("uri=", "");
         
         return responseEntityBuilder(HttpStatus.BAD_REQUEST,"Validation failed",path, errors);
+    }
+
+
+    // validatoin of request parameters
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<Map<String, Object>> handleMethodValidationExceptions(HandlerMethodValidationException ex, WebRequest request) {
+        
+        Map<String, String> errors = new HashMap<>();
+        ex.getAllErrors().forEach(error -> {
+            String[] s = error.getCodes()[0].trim().split("\\.");
+            errors.put(s[s.length-1],error.getDefaultMessage());
+        });
+        String path = request.getDescription(false).replace("uri=", "");
+        
+        return responseEntityBuilder(HttpStatus.BAD_REQUEST, "Validation failed", path, errors);
+    }
+
+
+    // check for required parameters to not be null
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<Map<String, Object>> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, WebRequest request) {
+
+        Map<String, String> errors = new HashMap<>();
+        String paramName = ex.getParameterName();
+        errors.put(paramName, paramName + " parameter is missing");
+        String path = request.getDescription(false).replace("uri=", "");
+        
+        return responseEntityBuilder(HttpStatus.BAD_REQUEST, "Missing request parameter", path, errors);
     }
 
 }

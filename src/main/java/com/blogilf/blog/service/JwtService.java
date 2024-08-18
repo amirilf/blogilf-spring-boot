@@ -70,7 +70,6 @@ public class JwtService {
     }
 
     public Claims extractAllClaims(String token) {
-        // TODO: shows error labeld log with message for invalid signature
         return Jwts.parser()
             .verifyWith(getKey())
             .build()
@@ -79,7 +78,6 @@ public class JwtService {
     }
     
     public boolean validateToken(String token) {
-        // TODO: get username as argument and check with userDetail.getUsername ?
         return extractClaim(token, Claims::getExpiration).after(new Date());
     }
 

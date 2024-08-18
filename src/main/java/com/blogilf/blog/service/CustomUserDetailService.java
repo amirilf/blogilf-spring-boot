@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.model.User;
 import com.blogilf.blog.model.UserPrincipal;
 import com.blogilf.blog.repository.UserRepository;
@@ -27,7 +28,7 @@ public class CustomUserDetailService implements UserDetailsService {
 
         if (user.isEmpty()) {
             System.out.println("user not found : " + username);
-            throw new UsernameNotFoundException("user not found : " + username);
+            throw new CustomResourceNotFoundException("user not found: " + username);
         }
 
         return new UserPrincipal(user.get());

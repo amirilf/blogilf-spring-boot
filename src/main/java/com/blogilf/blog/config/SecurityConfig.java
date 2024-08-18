@@ -38,7 +38,7 @@ public class SecurityConfig {
         http
         
             .authorizeHttpRequests(request -> request
-                .requestMatchers("/h2-console/**","/users/login","/users/register").permitAll()
+                .requestMatchers("/h2-console/**","/users/login","/users/register","/search").permitAll()
                 .anyRequest().authenticated() 
             )
         
