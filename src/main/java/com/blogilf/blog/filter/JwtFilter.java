@@ -5,14 +5,13 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.blogilf.blog.model.Role;
-import com.blogilf.blog.model.User;
-import com.blogilf.blog.model.UserPrincipal;
 import com.blogilf.blog.service.JwtService;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -25,6 +24,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Component
@@ -56,11 +56,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 
-                System.out.println(role);
-                UserPrincipal userPrincipal = new UserPrincipal(new User(null, null, username, null, null,null,Role.valueOf(role)));
+                UserDetails userDetails = new User(username, "", Collections.singleton(new SimpleGrantedAuthority(role)));
 
                 if (jwtService.validateToken(token)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

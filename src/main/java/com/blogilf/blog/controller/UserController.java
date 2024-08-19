@@ -8,6 +8,7 @@ import com.blogilf.blog.model.User;
 import com.blogilf.blog.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user){
+    public User register(@Valid @RequestBody User user){
         return userService.register(user); 
     }
 

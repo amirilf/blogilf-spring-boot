@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.blogilf.blog.config.SecurityConfig;
+import com.blogilf.blog.exception.CustomBadRequestException;
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.exception.CustomUnauthorizedException;
 import com.blogilf.blog.model.Role;
@@ -38,10 +39,14 @@ public class UserService {
         if (user.isPresent()) {
             return user.get();
         }
-        throw new CustomResourceNotFoundException("User with username: " + username + " is not found!");
+        throw new CustomResourceNotFoundException("User with `" + username + "` username not found!");
     }
 
     public User register(User user){
+
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new CustomBadRequestException("Username already taken.");
+        }
 
         user.setPassword(encoder.encode(user.getPassword()));
         user.setRole(Role.USER);    
@@ -53,14 +58,10 @@ public class UserService {
     
     public ResponseEntity<String> login(User user,HttpServletResponse response){
 
-        User dbUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomResourceNotFoundException("Username or password is wrong."));
-
-        System.out.println(user.getPassword());
-        System.out.println(encoder.encode(user.getPassword()));
-        System.out.println(dbUser.getPassword());
+        User dbUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomUnauthorizedException("Username or password is incorrect."));
 
         if (!encoder.matches(user.getPassword(), dbUser.getPassword())) {
-            throw new CustomUnauthorizedException("Username or password is wrong.");
+            throw new CustomUnauthorizedException("Username or password is incorrect.");
         }
 
         String token = jwtService.generateToken(dbUser.getUsername(),dbUser.getRole().name());

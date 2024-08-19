@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.blogilf.blog.dto.ArticleDTO;
-import com.blogilf.blog.exception.CustomConflictException;
+import com.blogilf.blog.exception.CustomBadRequestException;
 import com.blogilf.blog.exception.CustomForbiddenException;
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.model.Article;
@@ -47,7 +47,7 @@ public class ArticleService {
         article.setAuthor(author);
 
         if (articleRepository.existsBySlug(article.getSlug())){
-            throw new CustomConflictException("Slug is already used.");
+            throw new CustomBadRequestException("Slug already taken.");
         }
         
         return articleRepository.save(article);
@@ -87,7 +87,7 @@ public class ArticleService {
 
         // check for duplicate slug
         if (!slug.equals(article.getSlug()) && articleRepository.existsBySlug(article.getSlug())){
-            throw new CustomConflictException("Slug is already used.");
+            throw new CustomBadRequestException("Slug already taken.");
         }
 
         Article updatedArticle = updatedArticleOptional.get();
