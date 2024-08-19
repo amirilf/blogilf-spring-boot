@@ -41,6 +41,13 @@ public class GlobalExceptionHandler {
         String path = request.getDescription(false).replace("uri=", "");
         return responseEntityBuilder(HttpStatus.BAD_REQUEST, ex.getMessage(), path,null);
     }
+
+    // 401
+    @ExceptionHandler(CustomUnauthorizedException.class)
+    public ResponseEntity<Map<String, Object>> handleCustomUnauthorizedException(CustomUnauthorizedException ex, WebRequest request) {
+        String path = request.getDescription(false).replace("uri=", "");
+        return responseEntityBuilder(HttpStatus.UNAUTHORIZED, ex.getMessage(), path,null);
+    }
     
     // 403
     @ExceptionHandler(CustomForbiddenException.class)

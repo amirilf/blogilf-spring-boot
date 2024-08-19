@@ -10,6 +10,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.blogilf.blog.model.Role;
 import com.blogilf.blog.model.User;
 import com.blogilf.blog.model.UserPrincipal;
 import com.blogilf.blog.service.JwtService;
@@ -23,6 +24,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Map;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -41,16 +44,20 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String header = request.getHeader("Authorization");
             String token = null;
+            String role = null;
             String username = null;
 
             if (header != null && header.startsWith("Bearer")) {
                 token = header.substring(7);
-                username = jwtService.extractUsername(token);
+                Map<String, String> usernameAndRoles = jwtService.extractUsernameAndRole(token);
+                role = usernameAndRoles.get("role");
+                username = usernameAndRoles.get("username");
             }
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 
-                UserPrincipal userPrincipal = new UserPrincipal(new User(null, null, username, null, null,null));
+                System.out.println(role);
+                UserPrincipal userPrincipal = new UserPrincipal(new User(null, null, username, null, null,null,Role.valueOf(role)));
 
                 if (jwtService.validateToken(token)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());

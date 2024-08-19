@@ -43,9 +43,10 @@ public class JwtService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
         
-    public String generateToken(String username){
+    public String generateToken(String username,String role){
 
         Map<String,Object> claims = new HashMap<>();
+        claims.put("role", role);
 
         Key key = getKey();
 
@@ -67,6 +68,21 @@ public class JwtService {
     public <T> T extractClaim(String token,Function<Claims,T> claimResolver){
         Claims claims = extractAllClaims(token);
         return claimResolver.apply(claims);
+    }
+
+    public Map<String, String> extractUsernameAndRole(String token){
+        
+        Claims claims = extractAllClaims(token);
+        
+        String username = claims.getSubject();
+        String role = (String) claims.get("role");
+
+        Map<String, String> result = new HashMap<>();
+        
+        result.put("username", username);
+        result.put("role", role);
+        
+        return result;
     }
 
     public Claims extractAllClaims(String token) {

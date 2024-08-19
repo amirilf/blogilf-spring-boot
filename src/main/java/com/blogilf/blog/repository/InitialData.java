@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.blogilf.blog.config.SecurityConfig;
 import com.blogilf.blog.model.Article;
+import com.blogilf.blog.model.Role;
 import com.blogilf.blog.model.User;
 
 import io.jsonwebtoken.lang.Arrays;
@@ -18,8 +19,7 @@ public class InitialData implements CommandLineRunner {
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(SecurityConfig.encoderStrength);
 
-
-    InitialData(ArticleRepository articleRepository,UserRepository userRepository){
+    InitialData(ArticleRepository articleRepository, UserRepository userRepository){
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
     }
@@ -28,10 +28,12 @@ public class InitialData implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         // initial some starter data for testing
+
+        User admin1 = User.builder().name("Admin1").username("admin1").password(encoder.encode("000")).role(Role.ADMIN).build();
         
-        User user1 = User.builder().name("Amir").username("amir").password(encoder.encode("111")).build();
-        User user2 = User.builder().name("Ali").username("ali").password(encoder.encode("222")).build();
-        User user3 = User.builder().name("Reza").username("reza").password(encoder.encode("333")).build();
+        User user1 = User.builder().name("Amir").username("amir").password(encoder.encode("111")).role(Role.USER).build();
+        User user2 = User.builder().name("Ali").username("ali").password(encoder.encode("222")).role(Role.USER).build();
+        User user3 = User.builder().name("Reza").username("reza").password(encoder.encode("333")).role(Role.USER).build();
 
         Article a11 = Article.builder().title("Article 1").content("Hey, 11").slug("first1").author(user1).build();
         Article a12 = Article.builder().title("Article 2").content("Hey, 12").slug("first2").author(user1).build();
@@ -51,7 +53,7 @@ public class InitialData implements CommandLineRunner {
         Article a32 = Article.builder().title("Article 32").content("Hey, 32").slug("third2").author(user3).build();
         Article a33 = Article.builder().title("Article 33").content("Hey, 33").slug("third3").author(user3).build();
 
-
+        userRepository.save(admin1);
         userRepository.saveAll(Arrays.asList(new User[]{user1,user2,user3}));
         articleRepository.saveAll(Arrays.asList(new Article[]{a11,a12,a13,a14,a15,a16,a17,a18,a19}));
         articleRepository.saveAll(Arrays.asList(new Article[]{a21,a22,a23}));

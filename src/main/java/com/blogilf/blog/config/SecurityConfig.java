@@ -39,6 +39,7 @@ public class SecurityConfig {
         
             .authorizeHttpRequests(request -> request
                 .requestMatchers("/h2-console/**","/users/login","/users/register","/search").permitAll()
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated() 
             )
         
