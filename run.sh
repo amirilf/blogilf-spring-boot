@@ -1,3 +1,3 @@
-docker-compose up -d
+sudo docker-compose up -d
 ./mvnw spring-boot:run
-docker-compose down
+sudo docker-compose down

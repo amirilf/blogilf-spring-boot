@@ -16,12 +16,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Builder.Default;
 
 @Entity
 @Table(name = "articles")
@@ -58,7 +62,18 @@ public class Article {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User author;
-    
+
+    @Default
+    @NotNull(message = "View cannot be null.")
+    @PositiveOrZero(message = "View cannot be less than 0.")
+    @Column(name = "view")
+    private Long view = 0L;
+
+    @NotNull(message = "Read time cannot be null.")
+    @Min(value = 1, message = "Reading an article at least takes 1 min.")
+    @Column(name = "readtime")
+    private int readTime;
+
     @Override
     public String toString(){
         return title + " " + content + " " + slug + " " + publishedDate;
