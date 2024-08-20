@@ -1,7 +1,7 @@
 package com.blogilf.blog.controller;
 
-import com.blogilf.blog.dto.ArticleDTO;
 import com.blogilf.blog.model.Article;
+import com.blogilf.blog.projection.ArticleProjection;
 import com.blogilf.blog.service.ArticleService;
 
 import jakarta.validation.Valid;
@@ -30,7 +30,7 @@ public class ArticleController {
     }
 
     @GetMapping("")
-    public List<ArticleDTO> getArticles() {
+    public List<ArticleProjection> getArticles() {
         return articleService.getArticles();
     }
     

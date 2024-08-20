@@ -6,12 +6,12 @@ import java.util.Set;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.blogilf.blog.dto.ArticleDTO;
 import com.blogilf.blog.exception.CustomBadRequestException;
 import com.blogilf.blog.exception.CustomForbiddenException;
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.model.Article;
 import com.blogilf.blog.model.User;
+import com.blogilf.blog.projection.ArticleProjection;
 import com.blogilf.blog.repository.ArticleRepository;
 import com.blogilf.blog.repository.UserRepository;
 
@@ -20,7 +20,6 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ArticleService {
@@ -35,8 +34,9 @@ public class ArticleService {
         this.validator = validator;
     }
 
-    public List<ArticleDTO> getArticles(){
-        return articleRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+    public List<ArticleProjection> getArticles(){
+        // return articleRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+        return articleRepository.findAllProjectedBy();
     }
 
     public Article createArticle(Article article) {
@@ -99,20 +99,20 @@ public class ArticleService {
         return articleRepository.save(updatedArticle);
     }
 
-    private ArticleDTO convertToDto(Article article) {
+    // private ArticleDTO convertToDto(Article article) {
         
-        ArticleDTO dto = new ArticleDTO();
-        dto.setTitle(article.getTitle());
-        dto.setSlug(article.getSlug());
-        dto.setContent(article.getContent());
-        dto.setPublishedDate(article.getPublishedDate());
+    //     ArticleDTO dto = new ArticleDTO();
+    //     dto.setTitle(article.getTitle());
+    //     dto.setSlug(article.getSlug());
+    //     dto.setContent(article.getContent());
+    //     dto.setPublishedDate(article.getPublishedDate());
 
-        User user = article.getAuthor();
-        dto.setAuthorName(user.getName());
-        dto.setAuthorUsername(user.getUsername());
+    //     User user = article.getAuthor();
+    //     dto.setAuthorName(user.getName());
+    //     dto.setAuthorUsername(user.getUsername());
 
-        return dto;
-    }
+    //     return dto;
+    // }
 
     public void deleteArticle(String slug) {
         
