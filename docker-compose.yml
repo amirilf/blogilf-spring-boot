@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: blogilf-postgres
+    environment:
+      POSTGRES_USER: amir
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: blogDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - blog-network
+
+volumes:
+  postgres_data:
+
+networks:
+  blog-network:
