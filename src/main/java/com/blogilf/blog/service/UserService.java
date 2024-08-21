@@ -8,9 +8,9 @@ import com.blogilf.blog.config.SecurityConfig;
 import com.blogilf.blog.exception.CustomBadRequestException;
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.exception.CustomUnauthorizedException;
-import com.blogilf.blog.model.Role;
-import com.blogilf.blog.model.User;
-import com.blogilf.blog.repository.UserRepository;
+import com.blogilf.blog.model.entity.Role;
+import com.blogilf.blog.model.entity.User;
+import com.blogilf.blog.model.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 

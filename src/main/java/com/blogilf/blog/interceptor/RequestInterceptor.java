@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.blogilf.blog.model.Request;
-import com.blogilf.blog.repository.RequestRepository;
+import com.blogilf.blog.model.entity.Request;
+import com.blogilf.blog.model.repository.RequestRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

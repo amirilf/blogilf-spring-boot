@@ -1,4 +1,4 @@
-package com.blogilf.blog.projection;
+package com.blogilf.blog.model.projection;
 
 import java.time.LocalDate;
 

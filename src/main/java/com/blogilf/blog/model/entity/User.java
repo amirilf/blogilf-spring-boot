@@ -1,4 +1,4 @@
-package com.blogilf.blog.model;
+package com.blogilf.blog.model.entity;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

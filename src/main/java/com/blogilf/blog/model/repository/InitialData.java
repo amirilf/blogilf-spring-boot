@@ -1,13 +1,13 @@
-package com.blogilf.blog.repository;
+package com.blogilf.blog.model.repository;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.blogilf.blog.config.SecurityConfig;
-import com.blogilf.blog.model.Article;
-import com.blogilf.blog.model.Role;
-import com.blogilf.blog.model.User;
+import com.blogilf.blog.model.entity.Article;
+import com.blogilf.blog.model.entity.Role;
+import com.blogilf.blog.model.entity.User;
 
 import io.jsonwebtoken.lang.Arrays;
 

@@ -1,7 +1,7 @@
 package com.blogilf.blog.controller;
 
-import com.blogilf.blog.model.Article;
-import com.blogilf.blog.projection.ArticleProjection;
+import com.blogilf.blog.model.entity.Article;
+import com.blogilf.blog.model.projection.ArticleProjection;
 import com.blogilf.blog.service.ArticleService;
 
 import jakarta.validation.Valid;

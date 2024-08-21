@@ -1,4 +1,4 @@
-package com.blogilf.blog.dto;
+package com.blogilf.blog.model.dto;
 
 import java.time.LocalDate;
 

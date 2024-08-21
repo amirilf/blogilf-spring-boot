@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.blogilf.blog.model.User;
+import com.blogilf.blog.model.entity.User;
 import com.blogilf.blog.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;

@@ -4,18 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.blogilf.blog.model.Request;
-import com.blogilf.blog.repository.RequestRepository;
+import com.blogilf.blog.model.entity.Request;
+import com.blogilf.blog.model.repository.RequestRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class RequestService {
-
-    // private static final Logger logger = LoggerFactory.getLogger(RequestService.class);
 
     private RequestRepository requestRepository;
 
@@ -52,14 +51,12 @@ public class RequestService {
     private void calculateAndLogAverage(List<Request> requests, String period) {
         
         if (requests.isEmpty()) {
-            System.out.println("There is no requests in the last " + period);
-            // logger.info("There is no requests in the last " + period + ".");
+            log.info("There is no requests in the last {}",period);
             return;
         }
 
         double average = requests.stream().mapToLong(Request::getDuration).average().orElse(0);
 
-        System.out.println("Requests: " + requests.size() +" | AVG: " + average + " for last " + period);
-        // logger.info("AVG response time for the last " + period + " is " + average + " ms");
+        log.info("Requests: {} | Avg: {} | for last {}",requests.size(), average, period);
     }
 }

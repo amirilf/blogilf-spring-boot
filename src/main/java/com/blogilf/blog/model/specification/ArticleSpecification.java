@@ -1,10 +1,10 @@
-package com.blogilf.blog.specification;
+package com.blogilf.blog.model.specification;
 
 import java.time.LocalDate;
 
 import org.springframework.data.jpa.domain.Specification;
 
-import com.blogilf.blog.model.Article;
+import com.blogilf.blog.model.entity.Article;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

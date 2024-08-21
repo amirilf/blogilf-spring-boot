@@ -8,10 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.blogilf.blog.exception.CustomResourceNotFoundException;
-import com.blogilf.blog.model.Article;
-import com.blogilf.blog.model.User;
-import com.blogilf.blog.repository.ArticleRepository;
-import com.blogilf.blog.repository.UserRepository;
+import com.blogilf.blog.model.entity.Article;
+import com.blogilf.blog.model.entity.User;
+import com.blogilf.blog.model.repository.ArticleRepository;
+import com.blogilf.blog.model.repository.UserRepository;
 
 @Service
 public class SearchService {

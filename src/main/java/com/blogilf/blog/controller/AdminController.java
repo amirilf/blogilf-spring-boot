@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.blogilf.blog.model.Article;
+import com.blogilf.blog.model.entity.Article;
 import com.blogilf.blog.service.AdminService;
 
 import org.springframework.web.bind.annotation.GetMapping;

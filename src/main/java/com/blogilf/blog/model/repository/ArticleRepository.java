@@ -1,7 +1,7 @@
-package com.blogilf.blog.repository;
+package com.blogilf.blog.model.repository;
 
-import com.blogilf.blog.model.Article;
-import com.blogilf.blog.projection.ArticleProjection;
+import com.blogilf.blog.model.entity.Article;
+import com.blogilf.blog.model.projection.ArticleProjection;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

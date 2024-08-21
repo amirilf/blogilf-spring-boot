@@ -3,9 +3,9 @@ package com.blogilf.blog.service;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.blogilf.blog.model.Article;
-import com.blogilf.blog.repository.ArticleRepository;
-import com.blogilf.blog.specification.ArticleSpecification;
+import com.blogilf.blog.model.entity.Article;
+import com.blogilf.blog.model.repository.ArticleRepository;
+import com.blogilf.blog.model.specification.ArticleSpecification;
 
 import java.util.List;
 import java.time.LocalDate;
