@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.ToString;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.locationtech.jts.geom.Point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -65,4 +66,9 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "location", columnDefinition = "geometry(Point, 4326)")
+    @JsonIgnore
+    private Point location;
+
 }

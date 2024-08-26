@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:latest
+    image: postgis/postgis:16-3.4
     container_name: blogilf-postgres
     environment:
       POSTGRES_USER: amir

@@ -1,6 +1,7 @@
 package com.blogilf.blog.service;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import com.blogilf.blog.exception.CustomResourceNotFoundException;
 import com.blogilf.blog.exception.CustomUnauthorizedException;
 import com.blogilf.blog.model.entity.Role;
 import com.blogilf.blog.model.entity.User;
+import com.blogilf.blog.model.projection.UserDistanceProjection;
 import com.blogilf.blog.model.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,11 +37,7 @@ public class UserService {
 
     public User getUser(String username){
         Optional<User> user = userRepository.findByUsername(username);
-        
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new CustomResourceNotFoundException("User with `" + username + "` username not found!");
+        return user.orElseThrow(() -> new CustomResourceNotFoundException("User with `" + username + "` username not found!"));
     }
 
     public User register(User user){
@@ -66,5 +64,25 @@ public class UserService {
 
         String token = jwtService.generateToken(dbUser.getUsername(),dbUser.getRole().name());
         return ResponseEntity.ok(token);
+    }
+
+    public UserDistanceProjection getUserDistance(String username) {
+        
+        if (!userRepository.existsByUsername(username)) {
+            throw new CustomResourceNotFoundException("User with `" + username + "` username not found!");
+        }
+
+        String curUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        if (!userRepository.existsByUsername(curUsername)) {
+            throw new CustomResourceNotFoundException("User with `" + curUsername + "` username not found!");
+        }
+
+        UserDistanceProjection projection = userRepository.findDistanceAndLocations(curUsername, username);
+
+        if (projection == null) {
+            throw new IllegalStateException("Could not find distance or location data.");
+        }
+
+        return projection;
     }
 }

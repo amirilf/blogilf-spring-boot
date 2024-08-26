@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blogilf.blog.model.entity.User;
+import com.blogilf.blog.model.projection.UserDistanceProjection;
 import com.blogilf.blog.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,6 +36,11 @@ public class UserController {
     @GetMapping("/{username}")
     public User getUser(@PathVariable String username) {
         return userService.getUser(username);
+    }
+
+    @GetMapping("/{username}/dist")
+    public UserDistanceProjection getUserDistance(@PathVariable String username) {
+        return userService.getUserDistance(username);
     }
 
     @PostMapping("/register")
