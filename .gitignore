@@ -4,3 +4,4 @@ target/
 .idea
 build/
 .TODO
+countries.json

@@ -10,12 +10,13 @@ import com.blogilf.blog.model.entity.Role;
 import com.blogilf.blog.model.entity.User;
 import com.blogilf.blog.model.repository.ArticleRepository;
 import com.blogilf.blog.model.repository.UserRepository;
+
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Coordinate;
 
+import java.util.Arrays;
 import java.util.Random;
-import io.jsonwebtoken.lang.Arrays;
 
 @Component
 public class InitialData implements CommandLineRunner {
@@ -41,7 +42,7 @@ public class InitialData implements CommandLineRunner {
         User user3 = createUser("Reza", "reza", "333", Role.USER);
 
         userRepository.save(admin1);
-        userRepository.saveAll(Arrays.asList(new User[]{user1,user2,user3}));
+        userRepository.saveAll(Arrays.asList(user1, user2, user3));
 
         createArticle(user1, 1, 9);
         createArticle(user2, 21, 23);
@@ -54,7 +55,6 @@ public class InitialData implements CommandLineRunner {
             User user = createUser(name, username, password, Role.USER);
             userRepository.save(user);
         }
-
         System.out.println("\nData added!\n");
     }
 
@@ -70,8 +70,8 @@ public class InitialData implements CommandLineRunner {
     }
 
     private Point createLocation() {
-        double lat = -90 + 180 * random.nextDouble();  // lat btw -90 and 90
-        double lon = -180 + 360 * random.nextDouble(); // lon btw -180 and 180
+        double lat = -90 + 180 * random.nextDouble();  // lat between -90 and 90
+        double lon = -180 + 360 * random.nextDouble(); // lon between -180 and 180
         return geometryFactory.createPoint(new Coordinate(lon, lat));
     }
 
