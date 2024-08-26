@@ -24,7 +24,7 @@ public class SearchController {
     }
     
     @GetMapping("")
-    public ResponseEntity<? extends Page<?>> searchArticles (
+    public ResponseEntity<? extends Page<?>> search (
         @RequestParam @NotBlank(message = "Query cannot be blank") String query,
         @RequestParam(defaultValue = "articles") @Pattern(regexp = "articles|users", message = "Type must be 'articles' or 'users'") String type,
         @RequestParam(defaultValue = "nto") @Pattern(regexp = "nto|otn", message = "Sort must be 'nto' or 'otn'") String sort,

@@ -1,5 +1,8 @@
 package com.blogilf.blog.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtService jwtService;
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(SecurityConfig.encoderStrength);
+    private final int userPageSize = 10;
 
     UserService(UserRepository userRepository, JwtService jwtService){
         this.userRepository = userRepository;
@@ -35,6 +39,25 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public Page<User> getNearbyUsers(Double distance, int page) {
+
+        String curUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Pageable pageable = PageRequest.of(page-1, userPageSize);
+
+        Page<User> nearbyUsers;
+        if (distance != null) {
+            nearbyUsers = userRepository.findUsersWithinDistance(curUsername, distance, pageable);
+        } else {
+            nearbyUsers = userRepository.findAllUsersSortedByProximity(curUsername, pageable);
+        }
+        
+        if (nearbyUsers.isEmpty()) {
+            throw new CustomResourceNotFoundException("No users found.");
+        }
+
+        return nearbyUsers;
+    }
+    
     public User getUser(String username){
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElseThrow(() -> new CustomResourceNotFoundException("User with `" + username + "` username not found!"));
@@ -73,9 +96,6 @@ public class UserService {
         }
 
         String curUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        if (!userRepository.existsByUsername(curUsername)) {
-            throw new CustomResourceNotFoundException("User with `" + curUsername + "` username not found!");
-        }
 
         UserDistanceProjection projection = userRepository.findDistanceAndLocations(curUsername, username);
 

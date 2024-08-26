@@ -24,4 +24,29 @@ public interface UserRepository extends JpaRepository<User,Long>{
                    "WHERE u1.username = :curUsername AND u2.username = :distUsername", 
         nativeQuery = true
     )
-    UserDistanceProjection findDistanceAndLocations(@Param("curUsername") String curUsername, @Param("distUsername") String distUsername);}
+    UserDistanceProjection findDistanceAndLocations(@Param("curUsername") String curUsername, @Param("distUsername") String distUsername);
+
+    @Query(
+        value = "SELECT u.*, (ST_DistanceSphere(u.location, (SELECT location FROM users WHERE username = :curUsername)) / 1000) as distance " +
+                "FROM users u " +
+                "WHERE u.role = 'USER' AND u.username != :curUsername " +
+                "AND (ST_DistanceSphere(u.location, (SELECT location FROM users WHERE username = :curUsername)) / 1000) <= :distance " +
+                "ORDER BY distance",
+        countQuery = "SELECT count(*) FROM users u " +
+                     "WHERE u.role = 'USER' AND u.username != :curUsername " +
+                     "AND (ST_DistanceSphere(u.location, (SELECT location FROM users WHERE username = :curUsername)) / 1000) <= :distance",
+        nativeQuery = true
+    )
+    Page<User> findUsersWithinDistance(@Param("curUsername") String curUsername, @Param("distance") double distance, Pageable pageable);    
+    
+    @Query(
+        value = "SELECT u.*, (ST_DistanceSphere(u.location, (SELECT location FROM users WHERE username = :curUsername)) / 1000) as distance " +
+                "FROM users u " +
+                "WHERE u.role = 'USER' AND u.username != :curUsername " +
+                "ORDER BY distance",
+        countQuery = "SELECT count(*) FROM users u " +
+                     "WHERE u.role = 'USER' AND u.username != :curUsername",
+        nativeQuery = true
+    )
+    Page<User> findAllUsersSortedByProximity(@Param("curUsername") String curUsername, Pageable pageable);
+}
