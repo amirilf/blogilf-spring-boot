@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.blogilf.blog.model.entity.User;
 import com.blogilf.blog.model.projection.UserDistanceProjection;
+import com.blogilf.blog.service.LogService;
 import com.blogilf.blog.service.UserService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,12 +30,16 @@ public class UserController {
 
     private final UserService userService;
 
-    UserController(UserService userService){
+    private final LogService logProducerService;
+
+    UserController(UserService userService, LogService logProducerService){
         this.userService = userService;
+        this.logProducerService = logProducerService;
     }
     
     @GetMapping("")
     public List<User> getUsers() {
+        logProducerService.sendLogMessage("Requesting to /users...");
         return userService.getUsers();
     }
 

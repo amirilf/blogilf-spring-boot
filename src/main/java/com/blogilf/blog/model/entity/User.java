@@ -29,6 +29,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -74,10 +75,16 @@ public class User {
     private Point location;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Country country;
 
     @JsonProperty("country")
     public String getCountryName() {
         return country != null ? country.getName() : "Non-country";
+    }
+
+    @JsonProperty("articles")
+    public List<String> getArticleNames() {
+        return articles.stream().map(Article::getTitle).collect(Collectors.toList());
     }
 }
