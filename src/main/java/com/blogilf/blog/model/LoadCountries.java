@@ -1,6 +1,7 @@
 package com.blogilf.blog.model;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.blogilf.blog.model.entity.Country;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Component
+@Order(1)
 public class LoadCountries implements CommandLineRunner {
 
     private final CountryRepository countryRepository;

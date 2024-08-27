@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.locationtech.jts.geom.Point;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,6 +21,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -71,4 +73,11 @@ public class User {
     @JsonIgnore
     private Point location;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Country country;
+
+    @JsonProperty("country")
+    public String getCountryName() {
+        return country != null ? country.getName() : "Non-country";
+    }
 }

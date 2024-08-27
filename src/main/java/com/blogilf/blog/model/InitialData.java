@@ -1,6 +1,7 @@
 package com.blogilf.blog.model;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,7 @@ import com.blogilf.blog.model.entity.Article;
 import com.blogilf.blog.model.entity.Role;
 import com.blogilf.blog.model.entity.User;
 import com.blogilf.blog.model.repository.ArticleRepository;
+import com.blogilf.blog.model.repository.CountryRepository;
 import com.blogilf.blog.model.repository.UserRepository;
 
 import org.locationtech.jts.geom.GeometryFactory;
@@ -19,17 +21,20 @@ import java.util.Arrays;
 import java.util.Random;
 
 @Component
+@Order(2)
 public class InitialData implements CommandLineRunner {
 
     private final ArticleRepository articleRepository;
     private final UserRepository userRepository;
+    private final CountryRepository countryRepository;
     private final GeometryFactory geometryFactory = new GeometryFactory();
     private final Random random = new Random();
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(SecurityConfig.encoderStrength);
 
-    InitialData(ArticleRepository articleRepository, UserRepository userRepository){
+    InitialData(ArticleRepository articleRepository, UserRepository userRepository, CountryRepository countryRepository){
         this.articleRepository = articleRepository;
         this.userRepository = userRepository;
+        this.countryRepository = countryRepository;
     }
 
     @Override
@@ -66,13 +71,16 @@ public class InitialData implements CommandLineRunner {
                 .password(encoder.encode(password))
                 .role(role)
                 .location(randomLocation)
+                .country(countryRepository.findCountryByLocation(randomLocation).orElse(null))
                 .build();
     }
 
     private Point createLocation() {
         double lat = -90 + 180 * random.nextDouble();  // lat between -90 and 90
         double lon = -180 + 360 * random.nextDouble(); // lon between -180 and 180
-        return geometryFactory.createPoint(new Coordinate(lon, lat));
+        Point point = geometryFactory.createPoint(new Coordinate(lon, lat));
+        point.setSRID(4326); // to work with country polygons
+        return point;
     }
 
     private void createArticle(User user, int start, int end) {
