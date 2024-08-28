@@ -17,7 +17,7 @@ public class RabbitConfig {
     private final String replyRoutingKey = "replyRoutingKey";
 
     @Bean
-    public DirectExchange logsExchange() {
+    public DirectExchange mainExchange() {
         return new DirectExchange(mainExchange);
     }
 
@@ -28,7 +28,7 @@ public class RabbitConfig {
 
     @Bean
     public Binding replyBinding() {
-        return BindingBuilder.bind(replyQueue()).to(logsExchange()).with(replyRoutingKey);
+        return BindingBuilder.bind(replyQueue()).to(mainExchange()).with(replyRoutingKey);
     }
 
     @Bean

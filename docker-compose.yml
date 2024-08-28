@@ -13,6 +13,18 @@ services:
     networks:
       - blog-network
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # service port
+      - "15672:15672" # management plugin port
+    networks:
+      - blog-network
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
 volumes:
   postgres_data:
 

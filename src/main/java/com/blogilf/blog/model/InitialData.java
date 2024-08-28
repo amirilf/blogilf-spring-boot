@@ -60,7 +60,8 @@ public class InitialData implements CommandLineRunner {
             User user = createUser(name, username, password, Role.USER);
             userRepository.save(user);
         }
-        System.out.println("\nData added!\n");
+        
+        System.out.println("Data added!");
     }
 
     private User createUser(String name, String username, String password, Role role) {

@@ -33,9 +33,8 @@ public class LoadCountries implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("Loading countries.");
         loadCountriesFromJson();
-        System.out.println("\nCountries loaded.");
+        System.out.println("Countries loaded!");
     }
     
     private void loadCountriesFromJson() throws IOException {

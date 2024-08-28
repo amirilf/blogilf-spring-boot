@@ -109,6 +109,7 @@ public class GlobalExceptionHandler {
 
 
     // validatoin of request parameters
+    @SuppressWarnings("null")
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ResponseEntity<Map<String, Object>> handleMethodValidationExceptions(HandlerMethodValidationException ex, WebRequest request) {
         

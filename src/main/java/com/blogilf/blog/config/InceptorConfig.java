@@ -16,6 +16,7 @@ public class InceptorConfig implements WebMvcConfigurer{
         this.requestInterceptor = requestInterceptor;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(requestInterceptor);

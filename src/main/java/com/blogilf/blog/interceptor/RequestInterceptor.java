@@ -21,12 +21,14 @@ public class RequestInterceptor implements HandlerInterceptor {
     }
 
 
+    @SuppressWarnings("null")
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         request.setAttribute("start_time", System.currentTimeMillis());
         return true;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         
