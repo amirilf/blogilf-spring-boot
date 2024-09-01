@@ -10,7 +10,6 @@ import com.blogilf.blog.model.projection.UserDistanceProjection;
 import com.blogilf.blog.service.LogService;
 import com.blogilf.blog.service.UserService;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
@@ -67,8 +66,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody User user, HttpServletResponse response) {
-        return userService.login(user,response);
+    public ResponseEntity<String> login(@RequestBody User user) {
+        return userService.login(user);
     }
     
 }

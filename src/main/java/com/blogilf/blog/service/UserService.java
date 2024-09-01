@@ -17,8 +17,6 @@ import com.blogilf.blog.model.entity.User;
 import com.blogilf.blog.model.projection.UserDistanceProjection;
 import com.blogilf.blog.model.repository.UserRepository;
 
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -77,7 +75,7 @@ public class UserService {
         return user;
     }
     
-    public ResponseEntity<String> login(User user,HttpServletResponse response){
+    public ResponseEntity<String> login(User user){
 
         User dbUser = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new CustomUnauthorizedException("Username or password is incorrect."));
 
